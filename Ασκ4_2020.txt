@@ -1,0 +1,61 @@
+-----1-----
+
+DROP PROCEDURE IF EXISTS malaka;
+DELIMITER $
+CREATE PROCEDURE malaka(IN barbie varchar) 
+BEGIN
+DECLARE date DATETIME;
+DECLARE years TINYINT;
+DECLARE onoma_et VARCHAR;
+
+SELECT reg_date, exp_years
+INTO date, years
+FROM user
+INNER JOIN recruiter ON user.username=recruiter.username
+WHERE username=barbie;
+
+IF (date>'01-01-2018' AND years>5) 
+THEN
+	SELECT name
+	INTO onoma
+	FROM etairia
+	INNER JOIN recruiter ON etairia.AFM=recruiter.firm
+	WHERE username=barbie;
+	SELECT onoma;
+ELSE
+	SELECT 'Not found!';
+END IF
+END$
+DELIMITER ;
+
+-----2-----
+
+DROP PROCEDURE IF EXISTS cojones
+DELIMITER $
+CREATE PROCEDURE cojones(IN ken VARCHAR)
+BEGIN
+DECLARE onoma_et VARCHAR;
+DECLARE onoma_user VARCHAR;
+DECLARE surname_user VARCHAR;
+DECLARE email_user VARCHAR;
+
+DECLARE SiriFlag INT;
+DECLARE Siri CURSOR FOR
+	SELECT name, surname, email
+	FROM user
+	INNER JOIN recruiter ON user.username=recruiter.username
+	WHERE username=Ken;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET SiriFlag=1;
+OPEN Siri;
+SET SiriFlag=0;
+FETCH Siri INTO onoma_user, surname_user, email_user;
+IF (SiriFlag=1)
+THEN 
+	SELECT 'no matches found!'
+ELSE
+WHILE (SiriFlag=0)
+DO
+	FETCH Siri INTO onoma_user, surname_user, email_user;
+CLOSE Siri;
+END$
+DELIMITER ;
