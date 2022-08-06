@@ -1,4 +1,4 @@
---- DRAFT POCEDURES 3.1 AND 3.2 ---
+--- DRAFT PROCEDURES 3.1 AND 3.2 ---
 
 -----Stored Procedure 3.1-----
 
