@@ -8,9 +8,7 @@ CREATE TABLE [dbo].[Events_Log]
 	event_date DATETIME NOT NULL,
 	name_of_object VARCHAR(256) NOT NULL,
 	type_of_object VARCHAR(25) NOT NULL,
-	id_of_object INT NOT NULL
-;
+	id_of_object INT NOT NULL;
  
 ALTER TABLE [dbo].[Events_Log] ADD CONSTRAINT DF_EventsLog_event_date  
-            DEFAULT GETDATE() FOR event_date
-;
+            DEFAULT GETDATE() FOR event_date;
