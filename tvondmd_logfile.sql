@@ -3,7 +3,7 @@ USE moviesondemand;
  
 CREATE TABLE [dbo].[Events_Log]
 	log_id SMALLINT(5) UNSIGNED NOT NULL,
-	login_name VARCHAR(50) NOT NULL,
+	login_email VARCHAR(50) NOT NULL,
 	event_category VARCHAR(50) NOT NULL,
 	event_date DATETIME NOT NULL,
 	type_of_object VARCHAR(25) NOT NULL,
