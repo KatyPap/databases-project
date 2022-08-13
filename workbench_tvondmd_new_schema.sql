@@ -1,37 +1,38 @@
+ ----- Alterations to the original schema -----
+
+----- DRAFT CREATE command for Log table-----
 CREATE TABLE logfile (
-    event_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	event_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	login_email VARCHAR(50) NOT NULL,
-    event_category VARCHAR(50) NOT NULL,
-    event_date DATETIME,
-    event_status ENUM ('Success', 'Failed') NOT NULL,
-    type_of_object VARCHAR(25) NOT NULL,
+	event_category VARCHAR(50) NOT NULL,
+	event_date DATETIME,
+	event_status ENUM ('Success', 'Failed') NOT NULL,
+	type_of_object VARCHAR(25) NOT NULL,
 	id_of_object INT NOT NULL,
 	rental_id INT DEFAULT NULL,
-    payment_id SMALLINT UNSIGNED NOT NULL,
-    PRIMARY KEY (event_id),
+	payment_id SMALLINT UNSIGNED NOT NULL,
+	PRIMARY KEY (event_id),
 	CONSTRAINT fk_logfile_rental FOREIGN KEY (rental_id) REFERENCES rental (rental_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_logfile_payment FOREIGN KEY (payment_id) REFERENCES payment (payment_id) ON DELETE RESTRICT ON UPDATE CASCADE
+	CONSTRAINT fk_logfile_payment FOREIGN KEY (payment_id) REFERENCES payment (payment_id) ON DELETE RESTRICT ON UPDATE CASCADE
 ); 
-
-    ----- CONSTRAINT fk_logfile_user FOREIGN KEY (login_email) REFERENCES user (email) ON DELETE RESTRICT ON UPDATE CASCADE -----
 
 ----- DRAFT CREATE commands for user's tables (ISA) -----
 
 
 ----- DRAFT CREATE commands for series' tables -----
 CREATE TABLE series (
-    series_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    title VARCHAR(128) NOT NULL,
-    description TEXT DEFAULT NULL,
-    language_id TINYINT UNSIGNED NOT NULL,
-    original_language_id TINYINT UNSIGNED DEFAULT NULL,
-    seasons INT DEFAULT 1,
-    release_year YEAR DEFAULT NULL,
-    rating ENUM('G','PG','PG-13','R','NC-17') DEFAULT 'G',
-    special_features SET('Trailers','Commentaries','Deleted Scenes','Behind the Scenes') DEFAULT NULL,
-    PRIMARY KEY (series_id),
-    CONSTRAINT fk_series_language FOREIGN KEY (language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_series_language_original FOREIGN KEY (original_language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE
+	series_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	title VARCHAR(128) NOT NULL,
+	description TEXT DEFAULT NULL,
+	language_id TINYINT UNSIGNED NOT NULL,
+	original_language_id TINYINT UNSIGNED DEFAULT NULL,
+	seasons INT DEFAULT 1,
+	release_year YEAR DEFAULT NULL,
+	rating ENUM('G','PG','PG-13','R','NC-17') DEFAULT 'G',
+	special_features SET('Trailers','Commentaries','Deleted Scenes','Behind the Scenes') DEFAULT NULL,
+	PRIMARY KEY (series_id),
+	CONSTRAINT fk_series_language FOREIGN KEY (language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_series_language_original FOREIGN KEY (original_language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE season (
