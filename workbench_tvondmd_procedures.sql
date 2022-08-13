@@ -130,9 +130,9 @@ SET msg = 'The number of rents of the customer is:';
 SELECT number_of_rents;
 
 END$
-DELIMITER;
+DELIMITER ;
 
------Stored Procedure 3.3-----
+-- Stored Procedure 3.3 --
 DROP PROCEDURE IF EXISTS procedure_33;
 DELIMITER $
 CREATE PROCEDURE procedure_33(IN customer_email VARCHAR(50), IN date3 DATETIME) 
@@ -155,4 +155,4 @@ GROUP BY event_category;
 SET msg = 'Number of rentals for this customer is:';
 SELECT temp_number_of_rents;
 END$
-DELIMITER;
+DELIMITER ;
