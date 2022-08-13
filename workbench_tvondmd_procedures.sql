@@ -24,8 +24,8 @@ DECLARE films_rental_cursor CURSOR FOR
 	FROM film
 	INNER JOIN inventory ON film.film_id=inventory.film_id
 	INNER JOIN rental ON inventory.inventory_id=rental.inventory_id
-	WHERE event_date>=date1 AND event_date<=date2
-    GROUP BY rental_id
+	WHERE rental_date>=date1 AND rental_date<=date2
+   	GROUP BY rental_id
 	ORDER BY COUNT(*) DESC
 	LIMIT quantity
 ;
@@ -36,8 +36,8 @@ DECLARE series_rental_cursor CURSOR FOR
 	FROM series
 	INNER JOIN inventory ON series.series_id=inventory.series_id
 	INNER JOIN rental ON inventory.inventory_id=rental.inventory_id
-	WHERE event_date>=date1 AND event_date<=date2
-    GROUP BY rental_id
+	WHERE rental_date>=date1 AND rental_date<=date2
+  	GROUP BY rental_id
 	ORDER BY COUNT(*) DESC
 	LIMIT quantity
 ;
