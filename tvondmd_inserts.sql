@@ -1,1 +1,0 @@
------ Insert commands for the new tables -----
