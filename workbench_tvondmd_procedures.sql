@@ -172,25 +172,24 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS procedure_34a;
 DELIMITER $
-CREATE PROCEDURE procedure_34a(IN lastaname1 VARCHAR(45), IN  lastname2 VARCHAR(45)) 
+CREATE PROCEDURE procedure_34a(IN lastname1 VARCHAR(45), IN  lastname2 VARCHAR(45)) 
 BEGIN
 -- Declaring the required local variables --
 DECLARE msg VARCHAR(50);
+DECLARE local_id SMALLINT UNSIGNED;
 DECLARE local_name VARCHAR(45);
 DECLARE local_lastname VARCHAR(45);
-DECLARE local_count INT;
-
--- Declaring our cursor for the SELECT command that retrieves the actors' data --
-DECLARE actors_data_cursor CURSOR FOR
-	SELECT first_name AS Actor_Name, last_name AS Actor_Lastname, COUNT(*) AS Number_of_Actors
-	FROM actor
-	WHERE last_name>=lastname1% AND last_name<=lastname2%
-    GROUP BY last_name
-	ORDER BY last_name
-;
+DECLARE Number_of_Actors INT;
 
 -- Declaring an exit flag for the cursor --
 DECLARE cursor_exit_flag INT; 
+
+-- Declaring our cursor for the SELECT command that retrieves the actors' data --
+DECLARE actors_data_cursor CURSOR FOR
+	SELECT actor_id
+    FROM actor
+    WHERE last_name BETWEEN lastname1 AND lastname2
+;
 
 -- Declaring the value of the flag which will indicate that the cursor went through the results --
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_exit_flag=1;
@@ -198,20 +197,31 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_exit_flag=1;
 -- Setting an initial value for the flag --
 SET cursor_exit_flag=0;
 
+SELECT COUNT(*)
+INTO Number_of_Actors
+FROM actor USE INDEX(idx_lastname)
+WHERE last_name BETWEEN lastname1 AND lastname2
+;
+
 -- Allowing the cursor to run the command that retrieves the actors' data --
 OPEN actors_data_cursor;
 BEGIN
 	REPEAT
-		IF (cursor_exit_flag<1) THEN
-			FETCH actors_data_cursor INTO local_name, local_lastname, local_count;
-				SELECT local_name, local_lastname, local_count;
+		IF (cursor_exit_flag<=1) THEN
+			FETCH actors_data_cursor INTO local_id;
+            SELECT first_name, last_name
+			FROM actor
+			WHERE last_name BETWEEN lastname1 AND lastname2 
+			ORDER BY last_name;
 			END IF;
-		UNTIL (cursor_exit_flag=1)
+		UNTIL (cursor_exit_flag>1)
 		END REPEAT;
 	END;
 CLOSE actors_data_cursor;
+SELECT Number_of_Actors;
 END$
 DELIMITER ;
+
 
 
 -- Stored Procedure 3.4b --
