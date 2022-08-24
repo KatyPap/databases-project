@@ -37,6 +37,7 @@ CREATE TABLE series (
 
 CREATE TABLE season (
     season_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    title VARCHAR(50) DEFAULT 'unknown', 
     season_year YEAR DEFAULT NULL,
     description TEXT DEFAULT NULL,
     episodes_per_season INT,
