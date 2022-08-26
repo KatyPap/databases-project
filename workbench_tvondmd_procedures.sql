@@ -176,7 +176,6 @@ CREATE PROCEDURE procedure_34a(IN lastname1 VARCHAR(45), IN  lastname2 VARCHAR(4
 BEGIN
 -- Declaring the required local variables --
 DECLARE msg VARCHAR(50);
-DECLARE local_id SMALLINT UNSIGNED;
 DECLARE local_name VARCHAR(45);
 DECLARE local_lastname VARCHAR(45);
 DECLARE Number_of_Actors INT;
@@ -186,10 +185,11 @@ DECLARE cursor_exit_flag INT;
 
 -- Declaring our cursor for the SELECT command that retrieves the actors' data --
 DECLARE actors_data_cursor CURSOR FOR
-	SELECT actor_id
-    FROM actor
-    WHERE last_name BETWEEN lastname1 AND lastname2
-;
+	SELECT first_name, last_name
+	FROM actor USE INDEX(idx_lastname)
+	WHERE last_name BETWEEN lastname1 AND lastname2 
+	ORDER BY last_name
+    ;
 
 -- Declaring the value of the flag which will indicate that the cursor went through the results --
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_exit_flag=1;
@@ -205,22 +205,22 @@ WHERE last_name BETWEEN lastname1 AND lastname2
 
 -- Allowing the cursor to run the command that retrieves the actors' data --
 OPEN actors_data_cursor;
+
 BEGIN
 	REPEAT
 		IF (cursor_exit_flag<=1) THEN
-			FETCH actors_data_cursor INTO local_id;
-            SELECT first_name, last_name
-			FROM actor
-			WHERE last_name BETWEEN lastname1 AND lastname2 
-			ORDER BY last_name;
+			FETCH NEXT FROM actors_data_cursor INTO local_name, local_lastname;
+            SELECT 'First Name : ', local_name, 'Last Name : ', local_lastname;
 			END IF;
-		UNTIL (cursor_exit_flag>1)
+		UNTIL (@FETCH_STATUS != 0)
 		END REPEAT;
 	END;
 CLOSE actors_data_cursor;
 SELECT Number_of_Actors;
 END$
 DELIMITER ;
+
+CALL procedure_34a('Orr', 'Pri');
 
 
 
