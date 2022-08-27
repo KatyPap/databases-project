@@ -42,7 +42,7 @@ CREATE TABLE season (
     episodes_per_season INT,
     series_id SMALLINT UNSIGNED NOT NULL,
     PRIMARY KEY (season_id),
-    CONSTRAINT fk_season_series FOREIGN KEY (series_id) REFERENCES series (series_id) ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT fk_season_series FOREIGN KEY (series_id) REFERENCES series (series_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE episode (
@@ -51,7 +51,7 @@ CREATE TABLE episode (
     length SMALLINT UNSIGNED DEFAULT NULL,
     season_id SMALLINT UNSIGNED NOT NULL,
     PRIMARY KEY (episode_id),
-    CONSTRAINT fk_episode_season FOREIGN KEY (season_id) REFERENCES season (season_id) ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT fk_episode_season FOREIGN KEY (season_id) REFERENCES season (season_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE series_actor (
