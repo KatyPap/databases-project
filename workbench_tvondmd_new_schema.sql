@@ -3,17 +3,16 @@
 -- DRAFT CREATE command for Log table --
 CREATE TABLE logfile (
     event_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-	login_email VARCHAR(50) NOT NULL,
+    login_email VARCHAR(50),
+    login_id SMALLINT UNSIGNED,
     event_category VARCHAR(50) NOT NULL,
     event_date DATETIME,
     event_status ENUM ('Success', 'Failed') NOT NULL,
-    type_of_object VARCHAR(25) NOT NULL,
-	id_of_object INT NOT NULL,
-	rental_id INT DEFAULT NULL,
-    payment_id SMALLINT UNSIGNED NOT NULL,
+    on_table VARCHAR(50) NOT NULL,
     PRIMARY KEY (event_id),
-	CONSTRAINT fk_logfile_rental FOREIGN KEY (rental_id) REFERENCES rental (rental_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_logfile_payment FOREIGN KEY (payment_id) REFERENCES payment (payment_id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (login_id) REFERENCES customer (customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (login_id) REFERENCES employee (employee_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (login_id) REFERENCES administrator (administrator_id) ON DELETE CASCADE ON UPDATE CASCADE
 ); 
 
 -- DRAFT CREATE commands for user's tables (ISA) --
