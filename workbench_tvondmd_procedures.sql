@@ -175,10 +175,9 @@ DELIMITER $
 CREATE PROCEDURE procedure_34a(IN lastname1 VARCHAR(45), IN  lastname2 VARCHAR(45)) 
 BEGIN
 -- Declaring the required local variables --
-DECLARE msg VARCHAR(50);
 DECLARE local_name VARCHAR(45);
 DECLARE local_lastname VARCHAR(45);
-DECLARE Number_of_Actors INT;
+DECLARE actors INT;
 
 -- Declaring an exit flag for the cursor --
 DECLARE cursor_exit_flag INT; 
@@ -197,30 +196,28 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_exit_flag=1;
 -- Setting an initial value for the flag --
 SET cursor_exit_flag=0;
 
-SELECT COUNT(*)
-INTO Number_of_Actors
-FROM actor USE INDEX(idx_lastname)
-WHERE last_name BETWEEN lastname1 AND lastname2
-;
-
 -- Allowing the cursor to run the command that retrieves the actors' data --
 OPEN actors_data_cursor;
 
 BEGIN
 	REPEAT
-		IF (cursor_exit_flag<=1) THEN
-			FETCH NEXT FROM actors_data_cursor INTO local_name, local_lastname;
+		IF (cursor_exit_flag<1) THEN
+			FETCH FROM actors_data_cursor INTO local_name, local_lastname;
             SELECT 'First Name : ', local_name, 'Last Name : ', local_lastname;
-			END IF;
-		UNTIL (@FETCH_STATUS != 0)
-		END REPEAT;
+		END IF;
+	UNTIL (cursor_exit_flag=1)
+	END REPEAT;
 	END;
 CLOSE actors_data_cursor;
-SELECT Number_of_Actors;
+
+SELECT COUNT(*)
+INTO actors
+FROM actor USE INDEX(idx_lastname)
+WHERE last_name BETWEEN lastname1 AND lastname2
+;
+SELECT 'Number of actors : ', actors;
 END$
 DELIMITER ;
-
-CALL procedure_34a('Orr', 'Pri');
 
 
 
@@ -229,25 +226,24 @@ CALL procedure_34a('Orr', 'Pri');
 
 DROP PROCEDURE IF EXISTS procedure_34b;
 DELIMITER $
-CREATE PROCEDURE procedure_34b(IN actor_lastaname VARCHAR(45)) 
+CREATE PROCEDURE procedure_34b(IN actor_lastname VARCHAR(45)) 
 BEGIN
 -- Declaring the required local variables --
 DECLARE msg VARCHAR(50);
 DECLARE local_name VARCHAR(45);
 DECLARE local_lastname VARCHAR(45);
-DECLARE local_count INT;
-
--- Declaring our cursor for the SELECT command that retrieves the actors' data --
-DECLARE actors_data_cursor CURSOR FOR
-	SELECT first_name AS Actor_Name, last_name AS Actor_Lastname, COUNT(*) AS Number_of_Actors
-	FROM actor
-	WHERE last_name>='lastname1%' AND last_name<='lastname2%'
-    GROUP BY last_name
-	ORDER BY last_name
-;
+DECLARE number_of_actors INT;
 
 -- Declaring an exit flag for the cursor --
 DECLARE cursor_exit_flag INT; 
+
+-- Declaring our cursor for the SELECT command that retrieves the actors' data --
+DECLARE actors_data_cursor CURSOR FOR
+	SELECT first_name, last_name
+	FROM actor USE INDEX(idx_lastname)
+	WHERE last_name LIKE actor_lastname
+;
+
 
 -- Declaring the value of the flag which will indicate that the cursor went through the results --
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_exit_flag=1;
@@ -255,26 +251,26 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursor_exit_flag=1;
 -- Setting an initial value for the flag --
 SET cursor_exit_flag=0;
 
-SELECT COUNT(*)
-FROM actor
-INTO local_count
-WHERE last_name>=actor_lastname
-GROUP BY last_name
-ORDER BY last_name
-;
-
 -- Allowing the cursor to run the command that retrieves the actors' data --
 OPEN actors_data_cursor;
 BEGIN
 	REPEAT
 		IF (cursor_exit_flag<1) THEN
-			FETCH actors_data_cursor INTO local_name, local_lastname, local_count;
-				SELECT local_name, local_lastname, local_count;
+			FETCH actors_data_cursor INTO local_name, local_lastname;
+				SELECT 'First Name : ', local_name, 'Last Name : ', local_lastname;
 			END IF;
 		UNTIL (cursor_exit_flag=1)
 		END REPEAT;
 	END;
 CLOSE actors_data_cursor;
 
+SELECT COUNT(*)
+INTO actors
+FROM actor USE INDEX(idx_lastname)
+WHERE last_name LIKE actor_lastname
+;
+IF (actors!=0) THEN
+	SELECT 'Number of actors : ', actors;
+END IF;
 END$
 DELIMITER ;
